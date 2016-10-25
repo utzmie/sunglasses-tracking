@@ -34,10 +34,24 @@
 			</div>
 			<div class="image-container">
 				
-				<img id="target-image" src="img/billy2.jpg" alt="">
+				<img id="target-image" src="img/photo-billy.jpg" alt="">
 
 			</div><!-- /image-container -->
 		</div><!-- /face -->
+		<div id="face-list" class="face-list">
+			<button class="face-list__item" id="face-list-1" style="background-image:url(./img/photo-monalisa.jpg);">
+				<img src="./img/photo-monalisa.jpg" alt="">
+			</button>
+			<button class="face-list__item" id="face-list-2" style="background-image:url(./img/photo-hiyama.jpg);">
+				<img src="./img/photo-hiyama.jpg" alt="">
+			</button>
+			<button class="face-list__item" id="face-list-3" style="background-image:url(./img/photo-two.jpg);">
+				<img src="./img/photo-two.jpg" alt="">
+			</button>
+			<button class="face-list__item" id="face-list-4" style="background-image:url(./img/photo-shinji.jpg);">
+				<img src="./img/photo-shinji.jpg" alt="">
+			</button>
+		</div>
 		
 		<!-- output error -->
 		<div id="result" class="result-container"></div>
@@ -45,8 +59,42 @@
 		<!-- button -->
 		<div class="button-container" style="text-align: center;">
 			<button disabled="disabled" type="button" class="button" id="start" style="min-width: 6em;">重ねろ！</button>
-			<p>音が出ます</p>
+			<p style="font-size: 12px;">※音が出ます</p>
 		</div>
+
+		<p class="input-container">
+			<input type="file" id="file_upload" name="file_upload">
+			<button class="button" type="submit" id="submit_upload" name="submit_upload">変更</button>
+		</p>
+		<p style="text-align: center; font-size: 12px;">※好きな画像を選んで「変更」を押してね</p>
+
+		<style>
+			.input-container {
+				display: -webkit-flex;
+				display: -moz-flex;
+				display: -ms-flex;
+				display: flex;
+				align-items: flex-start;
+			}
+			.input-container input[type="file"] {
+				width: 100%;
+				border: 3px solid #ddd;
+				padding: 1.25em 1em;
+				cursor: pointer;
+				box-sizing: border-box;
+				margin-right: 1em;
+				font-size: 12px;
+			}
+			.input-container input[type="file"]:hover {
+				border-color: #E8A1A8;
+			}
+			.input-container button {
+				width: auto;
+				margin: 0;	
+			}
+		</style>
+
+
 
 		<h2>注釈</h2>
 		<ul>
@@ -54,7 +102,7 @@
 			<li>画像の解像度が大きいと認識にクッソ時間がかかる。</li>
 			<li>目の位置を判定してるわけじゃないからズレることがある。
 				<ul>
-					<li>顔が傾いてたりしたらたぶん無理。</li>
+					<li>顔があまりに傾いてたりしたらたぶん無理。</li>
 					<li>赤い枠内の、上から18%くらいの位置を指定したら、だいたい目のあたりに置かれるようになったけど、人によってパーツの位置が違うから仕方ないね。</li>
 				</ul>
 			</li>
@@ -72,8 +120,6 @@
 	<script src="./jquery.facedetection/jquery.facedetection.min.js"></script>
 	<script>
 
-		'use strict';
-
 		!function($) {
 
 			var $loading_container = $('#js-loading-container'); // Loading...
@@ -89,7 +135,8 @@
 			// button.attr('disabled', 'disabled');
 			window.onload = function() {
 				tracking();
-				$loading_container.remove();
+				$loading_container.hide();
+				// upload_file();
 
 				if ( ! isError ) {
 					button.attr('disabled', false);
@@ -158,31 +205,36 @@
 			// エラーメッセージ
 			function errorMessage() {
 				$('#result').show();
-				$('#result').append("顔認識が失敗したみたいだぞｗ");
+				$('#result').text("顔認識できないみたいだぞｗ");
 			}
 
 
 			// tracking face
 			function tracking() {
-			// window.onload = function() {
-			// $target_image.onload = function () {
+
 				$target_image.faceDetection({
 
 					// success
 					complete: function (faces) {
 
 						console.log(faces);
+
+						// reset
+						$("[id^=position]").remove();
 						
+
 						if ( faces.length > 0 ) {
 
 							// remove loading
-							$loading_container.remove();
+							$loading_container.hide();
+
+							button.attr('disabled', false);
+							$('#result').hide().text('');
 
 							// 人数分
 							for ( var i=0 ; i < faces.length ; i++ ) {
 
-								console.log(i);
-
+								console.log ("face: " + i);
 								console.log ( "x: "         + faces[i].x + 'px');
 								console.log ( "y: "         + faces[i].y + 'px');
 								console.log ( "positionX: " + faces[i].positionX + 'px');
@@ -225,6 +277,7 @@
 
 						// not have
 						else {
+							$loading_container.hide();
 							errorMessage();
 							button.attr('disabled', 'disabled');
 							isError = true;
@@ -233,14 +286,99 @@
 
 					// error
 					error: function (code, message) {
+						$loading_container.hide();
 						errorMessage();
 						button.attr('disabled', 'disabled');
 						isError = true;
+
+						$("[id^=position]").remove();
 					}
 				});
 			};
 
+
+
+
+			var file   = document.getElementById('file_upload');
+			var submit = document.getElementById('submit_upload');
+			
+			submit.addEventListener('click', function(e) {
+				
+				// 一度コラを解除
+				stopCollage();
+
+				var image_data = file.files[0];
+
+				if ( image_data ) {
+					$loading_container.show();
+				}
+
+				fileReader = new FileReader();
+				fileReader.readAsDataURL(image_data);
+
+				fileReader.onload = function(event) {
+					var image_data_uri = event.target.result;
+					$target_image.attr('src', image_data_uri);
+
+					tracking();
+				};
+
+			});
+
+
+			var face_list = document.getElementById('face-list');
+
+
+			for (var i = 0; i < face_list.children.length; i++){
+				var item = face_list.children[i];
+				item.addEventListener('click', function(e) {
+
+					stopCollage();
+					var thumbSrc = $(this).children().attr('src');
+					$target_image.attr('src', thumbSrc);
+					tracking();
+
+				});
+			}
+
+
+				// // console.log(face_list.children[i]);
+
+				// face_button.addEventListener('click', function(e) {
+
+				// 	// console.log(this);
+
+				// 	console.log( e.target.children );
+
+				// 	var src = e.target;
+				// 	// console.log(e.target.	.attr('src'));
+				// 	// $target_image.attr('src', src);
+
+				// 	// console.log(src);
+
+				// 	// var src = children('img').getAttribute('src');
+				// 	// console.log($this);
+				// 	// $target_image.attr('src', );
+				// });
+			// }
+
+			// var strThumbId = 'face-list-';
+
+			// for (var i = Things.length - 1; i >= 0; i--) {
+			// 	Things[i]
+			// }
+
+			// face_list.children.addEventListener('click', function(e) {
+			// 	// $target_image.attr('src', );
+			// 	console.log(e);
+			// });
+
+			// console.log( face_list.children );
+
+
+
 		}(jQuery);
+
 
 </script>  
 </body>

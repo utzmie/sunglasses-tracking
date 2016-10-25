@@ -44,6 +44,7 @@ ul li{
 
 /* button */
 .button {
+	white-space: nowrap;
 	position: relative;
 	display: inline-block;
 	text-align: center;
@@ -80,6 +81,44 @@ button[disabled="disabled"] {
 	margin: 2em 0;
 }
 
+
+/* Photo thumb list */
+#face-list {
+	display: table;
+	table-layout: fixed;
+	margin: 2em 0;	
+	width: 100%;
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.face-list__item {
+	display: table-cell;
+	width: 25%;
+	height: 100px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+	overflow: hidden;
+	vertical-align: top;
+	background-size: cover;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+.face-list__item:hover {
+	opacity: .7;
+}
+.face-list__item img {
+	/* max-width: 100%; */
+	display: none;
+}
+
+
+
+
+
 /* base image */
 #target {
 	width: 100%;
@@ -115,6 +154,7 @@ button[disabled="disabled"] {
 /* Loading Icon Container */
 .loading-container {
 	position: absolute;
+	z-index: 10;
 	background-color: #fff;
 	top: 0;
 	bottom: 0;
