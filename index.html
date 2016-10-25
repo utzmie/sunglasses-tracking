@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Camera</title>
+	<link rel="stylesheet" href="./style.css">
+	<style>
+
+		/* サングラス */
+		.sunglasses {
+			left: -10%;
+			top: -800px;
+			width: 120%;
+		}
+		.is-active .sunglasses {
+			top: 18% !important;
+		}
+		.is-active .border {
+			border-color: transparent;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>顔認証団</h1>
+
+		<div id="face">
+			<div id="js-loading-container" class="loading-container">
+				<div class="loading"></div>
+				<span>Loading</span>
+			</div>
+			<div class="image-container">
+				
+				<img id="target-image" src="img/billy2.jpg" alt="">
+
+			</div><!-- /image-container -->
+		</div><!-- /face -->
+		
+		<!-- output error -->
+		<div id="result" class="result-container"></div>
+		
+		<!-- button -->
+		<div class="button-container" style="text-align: center;">
+			<button disabled="disabled" type="button" class="button" id="start" style="min-width: 6em;">重ねろ！</button>
+			<p>音が出ます</p>
+		</div>
+
+		<h2>注釈</h2>
+		<ul>
+			<li>複数人でも認識できた（10人くらいの写真でもいけた）。</li>
+			<li>画像の解像度が大きいと認識にクッソ時間がかかる。</li>
+			<li>目の位置を判定してるわけじゃないからズレることがある。
+				<ul>
+					<li>顔が傾いてたりしたらたぶん無理。</li>
+					<li>赤い枠内の、上から18%くらいの位置を指定したら、だいたい目のあたりに置かれるようになったけど、人によってパーツの位置が違うから仕方ないね。</li>
+				</ul>
+			</li>
+			<li>顔認識には<a href="https://github.com/jaysalvat/jquery.facedetection" target="_blank">jquery.facedetection</a>というライブラリを使っているので、認識の性能自体についてはワシは何もできない。</li>
+		</ul>
+
+		<audio id="audio">
+			<source src="sound.mp3">
+		</audio>
+
+	</div><!-- /container -->
+
+
+	<script src="./jquery-2.2.4.min.js"></script> 
+	<script src="./jquery.facedetection/jquery.facedetection.min.js"></script>
+	<script>
+
+		'use strict';
+
+		!function($) {
+
+			var $loading_container = $('#js-loading-container'); // Loading...
+			var $face_container    = $('#face'); // 画像コンテナ
+			var $target_image      = $('#target-image'); // 重ねる画像（1枚）
+			var $sunglasses        = $('.sunglasses'); // サングラス（人数分）
+			var button             = $('#start');
+			var audio              = $('#audio').get(0);
+			var isError;
+
+
+			// hide Loading...
+			// button.attr('disabled', 'disabled');
+			window.onload = function() {
+				tracking();
+				$loading_container.remove();
+
+				if ( ! isError ) {
+					button.attr('disabled', false);
+				}
+			}
+
+
+			// button click event
+			
+			button.on('click', function() {
+
+				// 適用する
+				if ( ! isCollageActive() ) {
+					playCollage();
+
+				// 戻す
+				} else {
+					stopCollage();
+				}
+
+			});
+
+			// コラが適用中かどうかチェック
+			function isCollageActive() {
+				return $face_container.hasClass('is-active');
+			}
+
+
+			// コラ適用 ＆ サウンド再生
+			function playCollage() {
+				button.text('戻す');
+				$face_container.addClass('is-active');
+				$sunglasses.removeClass('is-hidden');
+
+				if ( !isSoundPlaying(audio) ) {
+					playSound();
+				}
+			}
+			// コラ削除 ＆ サウンド停止
+			function stopCollage() {
+				button.text('重ねろ！');
+				$face_container.removeClass('is-active');
+				$sunglasses.addClass('is-hidden');
+
+				if ( isSoundPlaying(audio) ) {
+					stopSound();
+				}
+			}
+
+
+			// サウンド再生
+			function playSound() {
+				audio.play();
+			}
+			// サウンド停止
+			function stopSound() {
+				audio.pause();
+				audio.currentTime = 0;
+			}
+			// // サウンドが再生中かどうかチェック
+			function isSoundPlaying(sound) {
+				return !sound.paused;
+			}
+
+
+			// エラーメッセージ
+			function errorMessage() {
+				$('#result').show();
+				$('#result').append("顔認識が失敗したみたいだぞｗ");
+			}
+
+
+			// tracking face
+			function tracking() {
+			// window.onload = function() {
+			// $target_image.onload = function () {
+				$target_image.faceDetection({
+
+					// success
+					complete: function (faces) {
+
+						console.log(faces);
+						
+						if ( faces.length > 0 ) {
+
+							// remove loading
+							$loading_container.remove();
+
+							// 人数分
+							for ( var i=0 ; i < faces.length ; i++ ) {
+
+								console.log(i);
+
+								console.log ( "x: "         + faces[i].x + 'px');
+								console.log ( "y: "         + faces[i].y + 'px');
+								console.log ( "positionX: " + faces[i].positionX + 'px');
+								console.log ( "positionY: " + faces[i].positionY + 'px');
+								console.log ( "off-x: "     + faces[i].offsetX + 'px' + '(parent)' );
+								console.log ( "off-y: "     + faces[i].offsetY + 'px' + '(parent)' );
+								console.log ( "scale-x: "   + faces[i].scaleX );
+								console.log ( "scale-y: "   + faces[i].scaleY );
+
+
+								var $face_position = $('<div id="position' + i + '"></div>');
+									$face_position.appendTo($face_container);
+
+								// create Frame
+								var $border = $('<div>');
+									$border.addClass('border');
+									$border.appendTo( '#position' + i );
+
+								// clear Img into box
+								var $sunglasses = $('<img>');
+									$sunglasses.attr('id', 'sunglasses' + i);
+									$sunglasses.attr('src', './sunglasses.png');
+									$sunglasses.addClass('sunglasses');
+									$sunglasses.appendTo( '#position' + i + ' > ' + '.border' );
+
+								// Frame (box)
+								$('#position' + i).children('.border').css({
+									left:   faces[i].positionX * faces[i].scaleX + "px" ,
+									top:    faces[i].positionY * faces[i].scaleY + "px" ,
+									width:  faces[i].width  * faces[i].scaleX + "px" ,
+									height: faces[i].height * faces[i].scaleY + "px"
+								});
+
+								var image_height = $target_image.height();
+								$('.sunglasses').css({
+									top: -(image_height)
+								});
+							}
+						}
+
+						// not have
+						else {
+							errorMessage();
+							button.attr('disabled', 'disabled');
+							isError = true;
+						}
+					},
+
+					// error
+					error: function (code, message) {
+						errorMessage();
+						button.attr('disabled', 'disabled');
+						isError = true;
+					}
+				});
+			};
+
+		}(jQuery);
+
+</script>  
+</body>
+</html>
