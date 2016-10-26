@@ -1,3 +1,15 @@
+<!--
+	コードが稚拙なのは許してや、城之内・・・
+　　　,,,,,,,､､､､,,,,,,,
+　　（ﾐﾐﾐｼYﾐｼ,彡）
+　　|f''　　''''　 ''ヾ|
+　　|ﾐ ,,,,,,､　,,,,,,, ﾐ|
+　　}|´立）　 立｀|{
+　 （'l　 　, i ､　　l'）
+　 　l 　 ' ｀_´,丶l
+　　 ﾄ　 .´ニ　' ｲ
+　 　| . ＼ー／　＼
+-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -85,7 +97,7 @@
 		</div>
 
 		<p class="input-container">
-			<input type="file" id="file_upload" name="file_upload">
+			<input type="file" id="file_upload" name="file_upload" accept="image/*">
 			<button class="button" type="submit" id="submit_upload" name="submit_upload">変更</button>
 		</p>
 		<p style="text-align: center; font-size: 12px;">※好きな画像を選んで「変更」→「重ねろ！」ボタンを押してね！<br>
@@ -155,11 +167,9 @@
 
 
 			// hide Loading...
-			// button.attr('disabled', 'disabled');
 			window.onload = function() {
 				tracking();
 				$loading_container.hide();
-				// upload_file();
 
 				if ( ! isError ) {
 					button.attr('disabled', false);
@@ -320,14 +330,12 @@
 			};
 
 
-
-
+			// ファイルアップロード（ローカル）
 			var file   = document.getElementById('file_upload');
 			var submit = document.getElementById('submit_upload');
 			
 			submit.addEventListener('click', function(e) {
-				
-				// 一度コラを解除
+
 				stopCollage();
 
 				var image_data = file.files[0];
@@ -349,8 +357,8 @@
 			});
 
 
+			// サムネイルをクリックしたら差し替え
 			var face_list = document.getElementById('face-list');
-
 
 			for (var i = 0; i < face_list.children.length; i++){
 				var item = face_list.children[i];
@@ -364,44 +372,7 @@
 				});
 			}
 
-
-				// // console.log(face_list.children[i]);
-
-				// face_button.addEventListener('click', function(e) {
-
-				// 	// console.log(this);
-
-				// 	console.log( e.target.children );
-
-				// 	var src = e.target;
-				// 	// console.log(e.target.	.attr('src'));
-				// 	// $target_image.attr('src', src);
-
-				// 	// console.log(src);
-
-				// 	// var src = children('img').getAttribute('src');
-				// 	// console.log($this);
-				// 	// $target_image.attr('src', );
-				// });
-			// }
-
-			// var strThumbId = 'face-list-';
-
-			// for (var i = Things.length - 1; i >= 0; i--) {
-			// 	Things[i]
-			// }
-
-			// face_list.children.addEventListener('click', function(e) {
-			// 	// $target_image.attr('src', );
-			// 	console.log(e);
-			// });
-
-			// console.log( face_list.children );
-
-
-
 		}(jQuery);
-
 
 </script>  
 </body>
