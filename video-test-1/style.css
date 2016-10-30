@@ -1,0 +1,257 @@
+:root {
+	box-sizing: border-box;
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body, button, input {
+	font-family: -apple-system, BlinkMacSystemFont, Helvetica, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+
+body {
+	line-height: 1.8;
+	font-size: 100%;
+}
+
+/* layout */
+.container {
+	width: 90%;
+	max-width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 40px;
+	padding-bottom: 40px;
+}
+
+/* heading */
+h1 {
+	text-align: center;
+	font-weight: normal;
+}
+h2 {
+	font-weight: normal;
+}
+
+ul li{
+	/* margin-bottom: .5em; */
+}
+
+/* button */
+.button {
+	white-space: nowrap;
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	cursor: pointer;
+	font-size: 16px;
+	border: 0;
+	outline: 0;
+	margin: 0 1em;
+	padding: .5em 1em;
+	border-radius: 4px;
+	box-shadow: 0 4px 0 #660000;
+	background-color: #cc0000;
+	color: #fff;
+}
+.button:active {
+	top: 4px;
+	box-shadow: none;
+}
+
+button[disabled="disabled"] {
+	opacity: .5;
+}
+
+
+
+/**
+ * This Contents
+ */
+
+/* base image container */
+#face {
+	position: relative;
+	overflow: hidden;
+	margin: 2em 0;
+}
+
+
+/* Photo thumb list */
+#face-list {
+	display: table;
+	table-layout: fixed;
+	margin: 2em 0;	
+	width: 100%;
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.face-list__item {
+	display: table-cell;
+	width: 25%;
+	height: 100px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+	overflow: hidden;
+	vertical-align: top;
+	background-size: cover;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+.face-list__item:hover {
+	opacity: .7;
+}
+.face-list__item img {
+	/* max-width: 100%; */
+	display: none;
+}
+
+
+
+
+
+/* base image */
+#target {
+	width: 100%;
+	height: auto;
+}
+.image-container {
+	background-color: #ddd;
+	text-align: center;
+	width: 640px;
+}
+.image-container #target-image {
+	vertical-align: middle;
+	max-width: 640px;
+	
+}
+
+/* box on face */
+.border {
+	display: block;
+	position: absolute;
+	border: 3px solid red;
+}
+
+/* Sunglasses */
+.sunglasses {
+	position: absolute;
+	z-index: 1;
+	height: auto;
+	-webkit-transition: all .35s ease-out;
+	transition: all .35s ease-out;
+}
+
+/* Loading Icon Container */
+.loading-container {
+	position: absolute;
+	z-index: 10;
+	background-color: #fff;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 100px;
+	height: 100px;
+	padding: 10px;
+	border-radius: 5px;
+
+	/* flexbox */
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	  -ms-flex-direction: column;
+	      flex-direction: column;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	  -ms-flex-align: center;
+	      align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	  -ms-flex-pack: center;
+	      justify-content: center;
+	-webkit-flex-wrap: wrap;
+	  -ms-flex-wrap: wrap;
+	      flex-wrap: wrap;
+}
+/* Loading Circle */
+.loading {
+	position: relative;
+	display: block;
+	margin: auto auto 5px;
+	width: 50px;
+	height: 50px;
+	margin: auto;
+	border: 2px solid #CCCCCC;
+	border-radius: 50%;
+}
+.loading::before {
+	content: '';
+	display: block;	
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	left: -2px;
+	width: 50px;
+	height: 50px;
+	border: 2px solid transparent;
+	border-top-color: #663399;
+	border-radius: 50%;
+	animation: loading-spin .7s linear infinite;
+}
+/* Loading Text */
+.loading-container span {
+	display: block;
+	text-align: center;
+	margin-top: 5px;
+	line-height: 1;
+	font-size: 12px;
+	color: #666;
+}
+@keyframes loading-spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+
+/**
+ * Error Result
+ */
+.result-container {
+	display: inline-block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	background-color: #fff;
+	text-align: center;
+	padding: .5em 1em;
+	width: auto;
+	border-radius: 5px;
+	color: #cc0000;
+	font-weight: bold;
+	display: none;
+}
+
+.button-container {
+	margin: 2em 0;
+}
+.button {
+	font-size: 20px;
+}

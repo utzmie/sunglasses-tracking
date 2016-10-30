@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>テスト</title>
+	<meta property="og:title" content="テスト">
+	<meta property="og:type" content="article">
+	<meta property="og:image" content="">
+	<meta property="og:url" content="https://utzmie.github.io/sunglasses-tracking/video-test-1/">
+	<meta property="og:description" content="旅行帰りのビリーだとなぜか顔認証できないのでシンジー。">
+	<meta property="og:site_name" content="utzmie">
+	<meta property="og:locale" content="ja_JP">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="テスト">
+	<meta name="twitter:description" content="旅行帰りのビリーだとなぜか顔認証できないのでシンジー。">
+	<meta name="twitter:image" content="https://utzmie.github.io/sunglasses-tracking/video-test-1/ogp.jpg">
+	<link rel="stylesheet" href="./style.css">
+	<style>
+
+		.container {
+			max-width: 720px;
+		}
+
+		/* サングラス */
+		.sunglasses {
+			left: -10%;
+			width: 120%;
+		}
+		.is-active .sunglasses {
+			top: 18% !important;
+		}
+		.is-active .border {
+			/* border-color: transparent; */
+		}
+		video {
+		}
+
+		.buttons {
+			margin: 2em 0;
+			text-align: center;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>テスト</h1>
+
+		<div id="video-container">
+			<video id="video" controls muted loop autoplay width="720" height="405">
+				<source src="shinji.mp4">
+			</video>
+		</div>
+
+		<div class="buttons">
+			<button id="play-video" class="button">Play</button>
+			<button id="pause-video" class="button">Pause</button>
+			<p>なんで（ビリーだと顔認証できないん）だぁ！？</p>
+		</div>
+
+		<!-- <img id="sunglasses" class="sunglasses" src="sunglasses.png" alt=""> -->
+
+	</div><!-- /container -->
+
+
+	<script src="./jquery-2.2.4.min.js"></script> 
+	<script src="./jquery.facedetection/jquery.facedetection.min.js"></script>
+
+	<script>
+
+		!function($) {
+
+			var $video          = $('#video');
+			var $videoContainer = $('#video-container');
+				$videoContainer.addClass('is-active');
+
+			function isVideoPlaying(video) {
+				return !video.paused;
+			}
+
+			console.log( isVideoPlaying($video) );
+
+			function faceTracking() {
+
+				if ( isVideoPlaying($video) ) {
+
+
+
+					$("[id^=position]").remove();
+
+					$video.faceDetection({
+
+						// interval: 1,
+						complete: function (faces) {
+
+							if ( faces.length > 0 ) {
+								for ( var i=0 ; i < faces.length ; i++ ) {
+
+									// console.log (faces);
+									// console.log ("face: " + i);
+									// console.log ( "x: "         + faces[i].x + 'px');
+									// console.log ( "y: "         + faces[i].y + 'px');
+									// console.log ( "positionX: " + faces[i].positionX + 'px');
+									// console.log ( "positionY: " + faces[i].positionY + 'px');
+									// console.log ( "off-x: "     + faces[i].offsetX + 'px' + '(parent)' );
+									// console.log ( "off-y: "     + faces[i].offsetY + 'px' + '(parent)' );
+									// console.log ( "scale-x: "   + faces[i].scaleX );
+									// console.log ( "scale-y: "   + faces[i].scaleY );
+
+									var $face_position = $('<div id="position' + i + '"></div>');
+										$face_position.appendTo($videoContainer);
+
+									// create Frame
+									var $border = $('<div>');
+										$border.addClass('border');
+										$border.appendTo( '#position' + i );
+
+									var $sunglasses = $('<img>');
+										$sunglasses.attr('id', 'sunglasses' + i);
+										$sunglasses.attr('src', './sunglasses.png');
+										$sunglasses.addClass('sunglasses');
+										$sunglasses.appendTo( '#position' + i + ' > ' + '.border' );
+
+									$('#position' + i).children('.border').css({
+										left:   faces[i].positionX * faces[i].scaleX + "px" ,
+										top:    faces[i].positionY * faces[i].scaleY + "px" ,
+										width:  faces[i].width  * faces[i].scaleX + "px" ,
+										height: faces[i].height * faces[i].scaleY + "px"
+									});
+								}
+
+							} else {
+
+							}
+						},
+
+						error: function (code, message) {
+
+						}
+
+					});
+				}
+			}
+
+			window.onload = function() {
+				faceTracking();
+				setInterval( faceTracking, 500);
+			}
+
+			var playButton = document.getElementById('play-video');
+			playButton.addEventListener('click', function() {
+				video.play();
+			});
+
+			var pauseButton = document.getElementById('pause-video');
+			pauseButton.addEventListener('click', function() {
+				video.pause();
+			});
+
+		}(jQuery);
+
+</script>  
+</body>
+</html>
