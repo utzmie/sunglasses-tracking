@@ -72,6 +72,10 @@
 
 			</div><!-- /image-container -->
 		</div><!-- /face -->
+
+		<!-- output error -->
+		<div id="result" class="result-container"></div>
+
 		<div id="face-list" class="face-list">
 			<button class="face-list__item" id="face-list-1" style="background-image:url(./img/photo-monalisa.jpg);">
 				<img src="./img/photo-monalisa.jpg" alt="">
@@ -86,10 +90,7 @@
 				<img src="./img/photo-shinji.jpg" alt="">
 			</button>
 		</div>
-		
-		<!-- output error -->
-		<div id="result" class="result-container"></div>
-		
+
 		<!-- button -->
 		<div class="button-container" style="text-align: center;">
 			<button disabled="disabled" type="button" class="button" id="start" style="min-width: 6em;">重ねろ！</button>
@@ -241,7 +242,7 @@
 			// エラーメッセージ
 			function errorMessage() {
 				$('#result').show();
-				$('#result').text("顔認識できないみたいだぞｗ");
+				$('#result').text("顔が認識できませんでした");
 			}
 
 
